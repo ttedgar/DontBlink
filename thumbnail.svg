@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="75%">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="#06060c"/>
+    </radialGradient>
+    <radialGradient id="irisGrad" cx="38%" cy="33%" r="65%">
+      <stop offset="0%"   stop-color="#b8f0ff"/>
+      <stop offset="45%"  stop-color="#4cc9f0"/>
+      <stop offset="100%" stop-color="#0077a8"/>
+    </radialGradient>
+    <radialGradient id="glowGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#4cc9f0" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#4cc9f0" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="eyeClip">
+      <path d="M58,200 Q256,118 454,200 Q256,282 58,200 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" fill="url(#bg)"/>
+
+  <!-- Atmospheric glow behind eye -->
+  <ellipse cx="256" cy="200" rx="240" ry="105" fill="url(#glowGrad)"/>
+
+  <!-- Eye whites -->
+  <path d="M58,200 Q256,118 454,200 Q256,282 58,200 Z" fill="white"/>
+
+  <!-- Iris -->
+  <circle cx="256" cy="200" r="76" fill="url(#irisGrad)" filter="url(#glow)"/>
+
+  <!-- Iris ring detail -->
+  <circle cx="256" cy="200" r="76" fill="none" stroke="#168aad" stroke-width="3" opacity="0.6"/>
+  <circle cx="256" cy="200" r="60" fill="none" stroke="#168aad" stroke-width="1" opacity="0.25"/>
+
+  <!-- Pupil -->
+  <circle cx="256" cy="200" r="34" fill="#05050f"/>
+
+  <!-- Primary highlight -->
+  <circle cx="278" cy="177" r="17" fill="white" opacity="0.92"/>
+  <!-- Secondary highlight -->
+  <circle cx="237" cy="218" r="7" fill="white" opacity="0.3"/>
+
+  <!-- Upper eyelid rim -->
+  <path d="M58,200 Q256,118 454,200"
+    fill="none" stroke="rgba(76,201,240,0.35)" stroke-width="2"/>
+
+  <!-- Eyelash hints top -->
+  <line x1="130" y1="162" x2="118" y2="142" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="175" y1="142" x2="168" y2="121" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="226" y1="130" x2="222" y2="109" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="256" y1="126" x2="256" y2="105" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="286" y1="130" x2="290" y2="109" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="336" y1="142" x2="344" y2="121" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="380" y1="162" x2="392" y2="143" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Divider line -->
+  <line x1="80" y1="328" x2="432" y2="328" stroke="rgba(76,201,240,0.2)" stroke-width="1"/>
+
+  <!-- DON'T BLINK -->
+  <text
+    x="256" y="396"
+    font-family="'Arial Black', 'Impact', sans-serif"
+    font-size="78"
+    font-weight="900"
+    text-anchor="middle"
+    fill="white"
+    letter-spacing="-2">DON'T BLINK</text>
+
+  <!-- Subtitle -->
+  <text
+    x="256" y="444"
+    font-family="Arial, sans-serif"
+    font-size="21"
+    font-weight="600"
+    text-anchor="middle"
+    fill="#4cc9f0"
+    letter-spacing="6">REACTION TIME</text>
+</svg>

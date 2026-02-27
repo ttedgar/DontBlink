@@ -114,6 +114,15 @@ html, body {
   min-height: 1.2em;
 }
 
+.privacy-link {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  transition: color 0.15s ease;
+}
+.privacy-link:hover { color: var(--text-muted); }
+
 /* ── Buttons ────────────────────────────────────────────── */
 .btn {
   display: inline-flex;
