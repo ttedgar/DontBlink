@@ -72,6 +72,8 @@ class DontBlink {
     this.$shareBtn       = document.getElementById('shareBtn');
     this.$shareFeedback  = document.getElementById('shareFeedback');
     this.$leaderboard    = document.getElementById('leaderboard');
+    this.$viewLbBtn      = document.getElementById('viewLbBtn');
+    this.$resultsScreen  = document.getElementById('results');
 
     // Game state
     this.state     = 'idle';
@@ -107,6 +109,7 @@ class DontBlink {
 
     this.$playAgainBtn.addEventListener('click', () => this._goToIntro());
     this.$shareBtn.addEventListener('click',     () => this._share());
+    this.$viewLbBtn.addEventListener('click',    () => this._browseLeaderboard());
 
     // Name submission: button click or Enter key
     this.$saveNameBtn.addEventListener('click', () => this._submitToLeaderboard());
@@ -401,9 +404,22 @@ class DontBlink {
   }
 
   // ── Navigation ───────────────────────────────────────────
+  async _browseLeaderboard() {
+    this.$finalScore.textContent     = '';
+    this.$rankDisplay.textContent    = '';
+    this.$scoreBreakdown.innerHTML   = '';
+    this.$leaderboard.innerHTML      = '';
+    this.$resultsScreen.dataset.browse = '1';
+    this.$playAgainBtn.textContent   = '← Back';
+    this._showScreen('results');
+    await this._renderLeaderboard(null);
+  }
+
   _goToIntro() {
     this._clearAllTimers();
     this._setState('idle');
+    delete this.$resultsScreen.dataset.browse;
+    this.$playAgainBtn.textContent = 'Play Again';
     this._showScreen('intro');
     this._refreshBestScore();
   }

@@ -130,6 +130,22 @@ html, body {
 }
 .privacy-link:hover { color: var(--text-muted); }
 
+.btn-view-lb {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  transition: color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-view-lb:hover { color: var(--text-muted); }
+
 /* ── Buttons ────────────────────────────────────────────── */
 .btn {
   display: inline-flex;
@@ -492,6 +508,15 @@ html, body {
   text-align: center;
   padding: 0.5rem 0;
 }
+
+/* ── Leaderboard browse mode (no score context) ─────────── */
+#results[data-browse] .results-label,
+#results[data-browse] .final-score,
+#results[data-browse] .rank-display,
+#results[data-browse] .score-breakdown,
+#results[data-browse] .save-row,
+#results[data-browse] .share-feedback,
+#results[data-browse] #shareBtn { display: none; }
 
 /* ── Responsive tweaks ──────────────────────────────────── */
 @media (max-width: 400px) {
