@@ -114,6 +114,13 @@ html, body {
   min-height: 1.2em;
 }
 
+.footer-links {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .privacy-link {
   font-size: 0.75rem;
   color: var(--text-dim);

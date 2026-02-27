@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Play — Don't Blink</title>
+  <meta name="description" content="Learn how to play Don't Blink — the reaction time game. Tips, rules, and how scoring works.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7553806437600381" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --dark-bg: #08080f;
+      --text: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.6);
+      --accent: #4cc9f0;
+      --danger: #ff4d6d;
+      --success: #4ade80;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--dark-bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.75;
+      padding: 3rem 1.5rem;
+    }
+    .container { max-width: 680px; margin: 0 auto; }
+    .back {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 2.5rem;
+      opacity: 0.8;
+      transition: opacity 0.15s;
+    }
+    .back:hover { opacity: 1; }
+    h1 {
+      font-size: clamp(1.8rem, 5vw, 2.5rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+    }
+    h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-top: 2rem;
+      margin-bottom: 0.6rem;
+    }
+    p { color: var(--text-muted); margin-bottom: 0.9rem; font-size: 0.95rem; }
+    .step {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      padding: 0.9rem 1rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+    }
+    .step-num {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--accent);
+      min-width: 28px;
+      line-height: 1.6;
+    }
+    .step-text { font-size: 0.93rem; color: var(--text-muted); }
+    .step-text strong { color: var(--text); }
+    .callout {
+      padding: 0.9rem 1.1rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      margin: 1rem 0;
+    }
+    .callout.warning {
+      background: rgba(255, 77, 109, 0.08);
+      border: 1px solid rgba(255, 77, 109, 0.2);
+      color: rgba(255, 200, 200, 0.8);
+    }
+    .callout.tip {
+      background: rgba(74, 222, 128, 0.06);
+      border: 1px solid rgba(74, 222, 128, 0.15);
+      color: rgba(200, 255, 220, 0.8);
+    }
+    .callout strong { color: var(--text); }
+    .score-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1rem 0;
+    }
+    .score-table th {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .score-table td {
+      padding: 0.5rem 0.75rem;
+      color: var(--text-muted);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .score-table td:first-child { color: var(--accent); font-weight: 700; }
+    hr { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 2rem 0; }
+    .footer {
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.2);
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .footer a { color: rgba(255,255,255,0.3); text-decoration: none; }
+    .footer a:hover { color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back">← Play the game</a>
+
+    <h1>How to Play</h1>
+
+    <p>
+      Don't Blink is a reaction time game. It takes about 60 seconds to play a full game
+      and the rules are deliberately simple — but the trick rounds keep it interesting.
+    </p>
+
+    <h2>The basics</h2>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text">
+        <strong>Hit Play.</strong> The screen fills with a solid color. Stare at it.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text">
+        <strong>Wait.</strong> After a random delay between 2 and 6 seconds, the color will change.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text">
+        <strong>Click the instant you see the change.</strong> Anywhere on the screen counts.
+        Your reaction time is measured to the millisecond.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-text">
+        <strong>Repeat for 5 rounds.</strong> Your final score is the average of all five times.
+        Lower is better.
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <strong>Don't click early.</strong> If you click before the color changes, the round resets
+      and you have to try again. Anticipating doesn't count — you have to actually react.
+    </div>
+
+    <h2>Trick rounds</h2>
+
+    <p>
+      On some rounds the screen briefly flashes a slightly different shade before snapping
+      back to the original color. This is a fake-out. If you click during the fake flash,
+      you'll see "Too early!" and the round resets.
+    </p>
+
+    <p>
+      The fake is designed to test whether you're reacting to genuine change or just
+      watching for movement. The real color change is always a completely different color —
+      unmistakably different from the fake flash.
+    </p>
+
+    <div class="callout tip">
+      <strong>Tip:</strong> Relax your focus rather than staring hard. Peripheral vision
+      picks up sudden color changes faster than direct focus.
+    </div>
+
+    <h2>Scoring</h2>
+
+    <p>What to aim for:</p>
+
+    <table class="score-table">
+      <thead>
+        <tr>
+          <th>Score</th>
+          <th>Rating</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Under 180ms</td><td>Extraordinary — top 1%</td></tr>
+        <tr><td>180 – 220ms</td><td>Excellent — elite level</td></tr>
+        <tr><td>220 – 260ms</td><td>Great — well above average</td></tr>
+        <tr><td>260 – 300ms</td><td>Good — around average</td></tr>
+        <tr><td>300 – 350ms</td><td>Room to improve</td></tr>
+        <tr><td>Over 350ms</td><td>Keep practising</td></tr>
+      </tbody>
+    </table>
+
+    <h2>The leaderboard</h2>
+
+    <p>
+      After 5 rounds, enter your name to save your score to the global leaderboard.
+      The leaderboard tracks the top 100 scores of all time. Rankings follow standard
+      competition rules — tied scores share the same rank, and the next rank is skipped.
+    </p>
+
+    <h2>Tips to improve</h2>
+    <ul style="color: var(--text-muted); font-size: 0.93rem; padding-left: 1.5rem; margin-bottom: 1rem;">
+      <li>Play on a monitor with a high refresh rate if possible — 60Hz vs 144Hz makes a measurable difference</li>
+      <li>Use a wired mouse rather than Bluetooth for less input lag</li>
+      <li>Play when alert — fatigue adds 20–40ms to most people's times</li>
+      <li>Don't tense up — a relaxed hand clicks faster than a tense one</li>
+      <li>Don't anticipate — it results in "Too early!" penalties that tank your average</li>
+    </ul>
+
+    <div class="callout tip">
+      <strong>Mobile players:</strong> Tap anywhere on the screen when the color changes.
+      Touch screens typically add ~10–20ms compared to a mouse click, so don't be
+      discouraged if your mobile scores are slightly higher.
+    </div>
+
+    <hr>
+
+    <div class="footer">
+      <span>&copy; 2026 dontblink.click</span>
+      <a href="about.html">About</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+    </div>
+  </div>
+</body>
+</html>

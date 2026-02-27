@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Don't Blink</title>
+  <meta name="description" content="Don't Blink is a free reaction time game. Test how fast your brain and fingers really are.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7553806437600381" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --dark-bg: #08080f;
+      --text: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.6);
+      --accent: #4cc9f0;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--dark-bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.75;
+      padding: 3rem 1.5rem;
+    }
+    .container { max-width: 680px; margin: 0 auto; }
+    .back {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 2.5rem;
+      opacity: 0.8;
+      transition: opacity 0.15s;
+    }
+    .back:hover { opacity: 1; }
+    h1 {
+      font-size: clamp(1.8rem, 5vw, 2.5rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+    }
+    h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-top: 2rem;
+      margin-bottom: 0.6rem;
+    }
+    p { color: var(--text-muted); margin-bottom: 0.9rem; font-size: 0.95rem; }
+    ul {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      padding-left: 1.5rem;
+      margin-bottom: 0.9rem;
+    }
+    ul li { margin-bottom: 0.35rem; }
+    .stat-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 1.5rem 0;
+    }
+    .stat {
+      flex: 1;
+      min-width: 140px;
+      background: rgba(76, 201, 240, 0.06);
+      border: 1px solid rgba(76, 201, 240, 0.15);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+    }
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--accent);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .stat-label { font-size: 0.78rem; color: var(--text-muted); }
+    hr { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 2rem 0; }
+    .footer {
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.2);
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .footer a { color: rgba(255,255,255,0.3); text-decoration: none; }
+    .footer a:hover { color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back">← Play the game</a>
+
+    <h1>About Don't Blink</h1>
+
+    <p>
+      Don't Blink is a minimalist reaction time game built around one simple question:
+      <em>how fast are you, really?</em> No guessing, no luck — just you, a color change,
+      and a clock counting in milliseconds.
+    </p>
+
+    <p>
+      The premise is simple. A solid color fills your screen. At a random moment it changes.
+      Click the instant you see it. Your reaction time is measured to the millisecond.
+      Complete five rounds and get your average — that's your score.
+    </p>
+
+    <h2>How fast is fast?</h2>
+
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-value">~250ms</div>
+        <div class="stat-label">Average human visual reaction time</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">~150ms</div>
+        <div class="stat-label">Fastest possible human reaction</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">200ms</div>
+        <div class="stat-label">Typical elite gamer reaction time</div>
+      </div>
+    </div>
+
+    <p>
+      The average person reacts to a visual stimulus in around 250 milliseconds — about a
+      quarter of a second. Elite esports players typically clock in around 200ms. Reaction
+      times below 150ms are physiologically unusual and often the result of anticipating
+      rather than reacting.
+    </p>
+
+    <h2>Why reaction time varies</h2>
+
+    <p>
+      Reaction time isn't fixed — it changes depending on a range of factors:
+    </p>
+    <ul>
+      <li><strong>Caffeine</strong> — a moderate amount genuinely improves reaction speed</li>
+      <li><strong>Fatigue</strong> — being tired significantly slows you down</li>
+      <li><strong>Age</strong> — reaction time peaks in your early 20s and gradually slows</li>
+      <li><strong>Device</strong> — monitor refresh rate and input lag affect your measured score</li>
+      <li><strong>Practice</strong> — regular training produces measurable improvements</li>
+    </ul>
+
+    <h2>The trick rounds</h2>
+
+    <p>
+      To stop you from clicking on reflex alone, some rounds include a brief fake flash —
+      a subtle shift in the background color that quickly reverts. If you click during a fake,
+      the round resets. Only a genuine color change counts. This is what separates
+      true reaction time from simple anticipation.
+    </p>
+
+    <h2>The leaderboard</h2>
+
+    <p>
+      The global leaderboard tracks the top 100 scores. Rankings use standard competition
+      scoring — if two players tie, they share the rank and the next position is skipped.
+      Enter your name after a game to claim your spot.
+    </p>
+
+    <h2>Built with</h2>
+    <p>
+      Don't Blink is built with plain HTML, CSS, and JavaScript — no frameworks, no
+      dependencies. Leaderboard data is stored in Firebase Firestore. The game runs
+      entirely in your browser.
+    </p>
+
+    <hr>
+
+    <div class="footer">
+      <span>&copy; 2026 dontblink.click</span>
+      <a href="how-to-play.html">How to Play</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+    </div>
+  </div>
+</body>
+</html>
