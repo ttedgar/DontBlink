@@ -37,7 +37,6 @@ function rand(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-// Lighten a hex color by `amt` per channel (clamped to 255)
 function lightenHex(hex, amt) {
   const n = parseInt(hex.replace('#', ''), 16);
   const r = Math.min(255, (n >> 16)         + amt);
@@ -46,7 +45,6 @@ function lightenHex(hex, amt) {
   return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
 }
 
-// Pick two distinct random colors from the palette
 function pickColorPair() {
   const shuffled = [...COLORS].sort(() => Math.random() - 0.5);
   return [shuffled[0], shuffled[1]];
@@ -55,35 +53,44 @@ function pickColorPair() {
 // ── Game Class ────────────────────────────────────────────
 class DontBlink {
   constructor() {
-    // DOM refs
-    this.$intro     = document.getElementById('intro');
+    // DOM refs — game
     this.$game      = document.getElementById('game');
-    this.$results   = document.getElementById('results');
     this.$startBtn  = document.getElementById('startBtn');
     this.$roundInd  = document.getElementById('roundIndicator');
     this.$gameMsgEl = document.getElementById('gameMessage');
     this.$msgText   = document.getElementById('messageText');
     this.$scoreDots = document.getElementById('scoreDots');
-    this.$finalScore      = document.getElementById('finalScore');
-    this.$scoreBreakdown  = document.getElementById('scoreBreakdown');
-    this.$playerName      = document.getElementById('playerName');
-    this.$playAgainBtn    = document.getElementById('playAgainBtn');
-    this.$shareBtn        = document.getElementById('shareBtn');
-    this.$shareFeedback   = document.getElementById('shareFeedback');
-    this.$bestScore       = document.getElementById('bestScoreDisplay');
-    this.$historySection  = document.getElementById('historySection');
+    this.$bestScore = document.getElementById('bestScoreDisplay');
 
-    // State
-    this.state        = 'idle';   // idle | waiting | ready | paused
-    this.roundNum     = 0;        // 1-based, current round
-    this.scores       = [];       // collected round times (ms)
-    this.fromColor    = null;
-    this.toColor      = null;
-    this.changeAt     = null;     // performance.now() when color changed
-    this._waitTimer   = null;
-    this._fakeTimer   = null;
-    this._fakeRevert  = null;
-    this._pauseTimer  = null;
+    // DOM refs — results
+    this.$finalScore     = document.getElementById('finalScore');
+    this.$rankDisplay    = document.getElementById('rankDisplay');
+    this.$scoreBreakdown = document.getElementById('scoreBreakdown');
+    this.$playerName     = document.getElementById('playerName');
+    this.$saveNameBtn    = document.getElementById('saveNameBtn');
+    this.$playAgainBtn   = document.getElementById('playAgainBtn');
+    this.$shareBtn       = document.getElementById('shareBtn');
+    this.$shareFeedback  = document.getElementById('shareFeedback');
+    this.$leaderboard    = document.getElementById('leaderboard');
+
+    // Game state
+    this.state     = 'idle';
+    this.roundNum  = 0;
+    this.scores    = [];
+    this.fromColor = null;
+    this.toColor   = null;
+    this.changeAt  = null;
+
+    // Results state
+    this._avg          = 0;
+    this._submitted    = false;
+    this._myTs         = null;
+    this._myRankResult = null;
+
+    this._waitTimer  = null;
+    this._fakeTimer  = null;
+    this._fakeRevert = null;
+    this._pauseTimer = null;
 
     this._bindEvents();
     this._refreshBestScore();
@@ -91,13 +98,21 @@ class DontBlink {
 
   // ── Events ──────────────────────────────────────────────
   _bindEvents() {
-    this.$startBtn.addEventListener('click',    () => this._startGame());
-    this.$game.addEventListener('click',        () => this._onGameClick());
-    this.$game.addEventListener('touchstart',   (e) => { e.preventDefault(); this._onGameClick(); },
-                                { passive: false });
+    this.$startBtn.addEventListener('click',  () => this._startGame());
+    this.$game.addEventListener('click',      () => this._onGameClick());
+    this.$game.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      this._onGameClick();
+    }, { passive: false });
+
     this.$playAgainBtn.addEventListener('click', () => this._goToIntro());
     this.$shareBtn.addEventListener('click',     () => this._share());
-    this.$playerName.addEventListener('change',  () => this._saveName());
+
+    // Name submission: button click or Enter key
+    this.$saveNameBtn.addEventListener('click', () => this._submitToLeaderboard());
+    this.$playerName.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') this._submitToLeaderboard();
+    });
   }
 
   // ── Screen Management ────────────────────────────────────
@@ -108,7 +123,6 @@ class DontBlink {
     if (id === 'intro' || id === 'results') {
       document.getElementById(id).classList.add('active');
     }
-    // The game screen is always visible behind; we just toggle overlays
   }
 
   // ── Best Score ───────────────────────────────────────────
@@ -121,7 +135,7 @@ class DontBlink {
   _startGame() {
     this.roundNum = 0;
     this.scores   = [];
-    this._showScreen('game');   // hide intro overlay
+    this._showScreen('game');
     this._updateDots();
     this._beginRound();
   }
@@ -132,22 +146,18 @@ class DontBlink {
     this._setState('waiting');
     this._updateRoundIndicator();
 
-    // Pick a color pair for this round
     [this.fromColor, this.toColor] = pickColorPair();
     this._setBg(this.fromColor);
     this._setMsg('Click anywhere when the color changes', false);
 
-    // Decide whether this round has a fake
     const hasFake = Math.random() < CFG.FAKE_CHANCE;
 
     if (hasFake) {
-      // Schedule fake first, then real change after fake clears
       const fakeDelay = rand(CFG.FAKE_MIN_DELAY, CFG.FAKE_MAX_DELAY);
       this._fakeTimer = setTimeout(() => {
         if (this.state !== 'waiting') return;
         this._triggerFake();
 
-        // Schedule real change after fake clears + gap
         const realDelay = CFG.FAKE_DURATION + rand(CFG.REAL_AFTER_FAKE, CFG.REAL_AFTER_FAKE + 1500);
         this._waitTimer = setTimeout(() => {
           if (this.state !== 'waiting') return;
@@ -155,7 +165,6 @@ class DontBlink {
         }, realDelay);
       }, fakeDelay);
     } else {
-      // Straight to the real change
       const delay = rand(CFG.MIN_DELAY, CFG.MAX_DELAY);
       this._waitTimer = setTimeout(() => {
         if (this.state !== 'waiting') return;
@@ -165,13 +174,10 @@ class DontBlink {
   }
 
   _triggerFake() {
-    // Briefly flash a lighter version of the current color, then revert
     const fakeColor = lightenHex(this.fromColor, 65);
     this._setBg(fakeColor);
     this._fakeRevert = setTimeout(() => {
-      if (this.state === 'waiting') {
-        this._setBg(this.fromColor);
-      }
+      if (this.state === 'waiting') this._setBg(this.fromColor);
     }, CFG.FAKE_DURATION);
   }
 
@@ -190,23 +196,21 @@ class DontBlink {
       const ms = Math.round(performance.now() - this.changeAt);
       this._recordScore(ms);
     }
-    // Ignore clicks during 'paused' or 'idle'
   }
 
   _tooEarly() {
     this._clearAllTimers();
     this._setState('paused');
-    this._setBg('#3d0000');   // deep danger red — immediate visual feedback
+    this._setBg('#3d0000');
     this._setMsg('Too early! ⚡', true);
 
-    // Shake the game screen
     this.$game.classList.remove('shake');
-    void this.$game.offsetWidth; // force reflow
+    void this.$game.offsetWidth;
     this.$game.classList.add('shake');
 
     this._pauseTimer = setTimeout(() => {
       this.$game.classList.remove('shake');
-      this.roundNum--;  // undo the increment so this round replays
+      this.roundNum--;
       this._beginRound();
     }, CFG.TOO_EARLY_PAUSE);
   }
@@ -228,95 +232,136 @@ class DontBlink {
   }
 
   // ── Results ──────────────────────────────────────────────
-  _showResults() {
-    const avg  = Math.round(this.scores.reduce((a, b) => a + b, 0) / this.scores.length);
-    const best = parseInt(localStorage.getItem('db_best') || '999999', 10);
+  async _showResults() {
+    this._avg          = Math.round(this.scores.reduce((a, b) => a + b, 0) / this.scores.length);
+    this._submitted    = false;
+    this._myTs         = null;
+    this._myRankResult = null;
 
     // Persist best
-    if (avg < best) {
-      localStorage.setItem('db_best', avg);
-    }
+    const best = parseInt(localStorage.getItem('db_best') || '999999', 10);
+    if (this._avg < best) localStorage.setItem('db_best', this._avg);
 
-    // Pre-fill name BEFORE saving history so the entry uses the right name
-    const savedName = localStorage.getItem('db_name');
-    if (savedName) this.$playerName.value = savedName;
-
-    // Save to history
-    this._saveToHistory(avg);
-
-    // Populate results UI
-    this.$finalScore.textContent = `${avg}ms`;
-
+    // Populate score UI
+    this.$finalScore.textContent = `${this._avg}ms`;
     this.$scoreBreakdown.innerHTML = this.scores
       .map((s, i) => `<span class="round-pill">R${i + 1}: ${s}ms</span>`)
       .join('');
 
-    this._renderHistory();
+    // Reset rank display and save button
+    this.$rankDisplay.textContent = '';
+    this.$rankDisplay.className   = 'rank-display';
+    this.$saveNameBtn.textContent = 'Save';
+    this.$saveNameBtn.disabled    = false;
+
+    // Pre-fill name from last session
+    const savedName = localStorage.getItem('db_name');
+    if (savedName) this.$playerName.value = savedName;
+
     this._showScreen('results');
     this._refreshBestScore();
+
+    // Show preview rank and initial leaderboard in parallel
+    const [peek] = await Promise.all([
+      Leaderboard.peek(this._avg),
+      this._renderLeaderboard(null),
+    ]);
+    this._updateRankDisplay(peek, false);
   }
 
-  // ── Local Storage ─────────────────────────────────────────
-  _saveToHistory(avg) {
-    // Use whatever is currently in the name field; don't overwrite db_name here
-    const name = this.$playerName.value.trim() || 'Anonymous';
-
-    const history = this._getHistory();
-    history.unshift({
-      name,
-      score: avg,
-      date:  new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
-    });
-    // Keep last 10 entries
-    history.splice(10);
-    localStorage.setItem('db_history', JSON.stringify(history));
-  }
-
-  _getHistory() {
-    try {
-      return JSON.parse(localStorage.getItem('db_history') || '[]');
-    } catch {
-      return [];
-    }
-  }
-
-  _saveName() {
-    const name = this.$playerName.value.trim();
-    if (name) localStorage.setItem('db_name', name);
-  }
-
-  _renderHistory() {
-    const history = this._getHistory();
-    if (history.length <= 1) {
-      this.$historySection.innerHTML = '';
+  // ── Leaderboard ──────────────────────────────────────────
+  _updateRankDisplay(rankResult, submitted) {
+    if (!rankResult) {
+      this.$rankDisplay.textContent = submitted ? 'Outside the top 100' : '';
+      this.$rankDisplay.className   = 'rank-display unranked';
       return;
     }
 
-    const rows = history
-      .slice(0, 8)
-      .map(h => `
-        <div class="history-row">
-          <span class="h-name">${this._esc(h.name)}</span>
-          <span class="h-score">${h.score}ms</span>
-          <span class="h-date">${this._esc(h.date)}</span>
-        </div>
-      `)
-      .join('');
+    const { rank, isTied } = rankResult;
+    const tied = isTied ? 'Tied for ' : '';
 
-    this.$historySection.innerHTML = `<h3>Your history</h3>${rows}`;
+    if (submitted) {
+      this.$rankDisplay.textContent = `${tied}#${rank} of 100`;
+      this.$rankDisplay.className   = 'rank-display confirmed';
+    } else {
+      this.$rankDisplay.textContent = `You'd be ${tied}#${rank}`;
+      this.$rankDisplay.className   = 'rank-display preview';
+    }
   }
 
-  _esc(str) {
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
+  async _submitToLeaderboard() {
+    if (this._submitted) return;
+    const name = this.$playerName.value.trim();
+    if (!name) {
+      this.$playerName.focus();
+      return;
+    }
+
+    this._submitted = true;
+    localStorage.setItem('db_name', name);
+    this.$saveNameBtn.textContent = 'Saved ✓';
+    this.$saveNameBtn.disabled    = true;
+
+    const result = await Leaderboard.submit(name, this._avg);
+    this._myRankResult = result;
+
+    if (result) this._myTs = result.ts;
+
+    this._updateRankDisplay(result, true);
+    await this._renderLeaderboard(this._myTs);
+  }
+
+  async _renderLeaderboard(myTs) {
+    const entries = await Leaderboard.getTop(10);
+
+    if (entries.length === 0) {
+      this.$leaderboard.innerHTML = '<p class="lb-empty">Be the first on the board.</p>';
+      return;
+    }
+
+    const myIndexInTop10 = myTs != null
+      ? entries.findIndex(e => e.ts === myTs)
+      : -1;
+
+    let html = '<p class="lb-header">Leaderboard</p>';
+
+    for (const e of entries) {
+      const isYou = e.ts === myTs;
+      const star  = isYou ? '★ ' : '';
+      html += `
+        <div class="lb-row${isYou ? ' lb-you' : ''}">
+          <span class="lb-rank">#${e.rank}</span>
+          <span class="lb-name">${star}${this._esc(e.name)}</span>
+          <span class="lb-score">${e.score}ms</span>
+        </div>`;
+    }
+
+    // Player submitted but landed outside the top 10 — append with separator
+    if (myTs != null && myIndexInTop10 === -1 && this._myRankResult) {
+      const r    = this._myRankResult;
+      const name = this.$playerName.value.trim() || 'You';
+      html += `
+        <div class="lb-sep">···</div>
+        <div class="lb-row lb-you">
+          <span class="lb-rank">#${r.rank}</span>
+          <span class="lb-name">★ ${this._esc(name)}</span>
+          <span class="lb-score">${this._avg}ms</span>
+        </div>`;
+    }
+
+    this.$leaderboard.innerHTML = html;
   }
 
   // ── Share ────────────────────────────────────────────────
   _share() {
-    const avg  = Math.round(this.scores.reduce((a, b) => a + b, 0) / this.scores.length);
-    const text = `I scored ${avg}ms on dontblink.click — can you beat me? ⚡`;
+    let text;
+    if (this._myRankResult) {
+      const { rank, isTied } = this._myRankResult;
+      const tied = isTied ? 'tied for ' : '';
+      text = `I'm ${tied}#${rank} with ${this._avg}ms on dontblink.click — can you beat me? ⚡`;
+    } else {
+      text = `I scored ${this._avg}ms on dontblink.click — can you beat me? ⚡`;
+    }
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text)
@@ -328,7 +373,6 @@ class DontBlink {
   }
 
   _fallbackCopy(text) {
-    // Create a temporary textarea for older browsers / insecure contexts
     const ta = document.createElement('textarea');
     ta.value = text;
     ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
@@ -339,7 +383,6 @@ class DontBlink {
       document.execCommand('copy');
       this._flashShareFeedback();
     } catch {
-      // Last resort: show the text to the user
       window.prompt('Copy this link:', text);
     }
     document.body.removeChild(ta);
@@ -348,6 +391,13 @@ class DontBlink {
   _flashShareFeedback() {
     this.$shareFeedback.classList.add('visible');
     setTimeout(() => this.$shareFeedback.classList.remove('visible'), 2200);
+  }
+
+  _esc(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
   }
 
   // ── Navigation ───────────────────────────────────────────
@@ -364,7 +414,6 @@ class DontBlink {
   }
 
   _setBg(color) {
-    // Always instant — no CSS transitions during gameplay
     this.$game.style.transition = 'none';
     this.$game.style.backgroundColor = color;
   }
@@ -373,7 +422,7 @@ class DontBlink {
     this.$msgText.textContent = text;
     if (pop) {
       this.$gameMsgEl.classList.remove('pop');
-      void this.$gameMsgEl.offsetWidth; // reflow to retrigger animation
+      void this.$gameMsgEl.offsetWidth;
       this.$gameMsgEl.classList.add('pop');
     }
   }
@@ -387,10 +436,8 @@ class DontBlink {
       const isNew = i === this.scores.length - 1;
       return `<span class="score-dot${isNew ? ' new' : ''}">${s}ms</span>`;
     });
-
     const empty = Array(CFG.ROUNDS - this.scores.length)
       .fill('<span class="score-dot empty"></span>');
-
     this.$scoreDots.innerHTML = [...filled, ...empty].join('');
   }
 

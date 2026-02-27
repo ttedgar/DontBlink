@@ -39,9 +39,10 @@
     <div class="overlay-content">
       <p class="results-label">Your average</p>
       <div id="finalScore" class="final-score">—</div>
+      <div id="rankDisplay" class="rank-display"></div>
       <div id="scoreBreakdown" class="score-breakdown"></div>
 
-      <div class="name-row">
+      <div class="save-row">
         <input
           type="text"
           id="playerName"
@@ -51,6 +52,7 @@
           autocomplete="off"
           spellcheck="false"
         >
+        <button id="saveNameBtn" class="btn-save">Save</button>
       </div>
 
       <div class="btn-row">
@@ -60,10 +62,17 @@
 
       <div id="shareFeedback" class="share-feedback">Copied to clipboard!</div>
 
-      <div id="historySection" class="history-section"></div>
+      <div id="leaderboard" class="leaderboard"></div>
     </div>
   </div>
 
+  <!-- Firebase compat SDK (no build tools required) -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-analytics-compat.js"></script>
+  <script src="firebase-init.js"></script>
+
+  <script src="leaderboard.js"></script>
   <script src="game.js"></script>
 </body>
 </html>

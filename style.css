@@ -275,6 +275,15 @@ html, body {
 }
 
 /* ── Results Screen ─────────────────────────────────────── */
+
+/* Allow scrolling when leaderboard makes content taller than viewport */
+#results .overlay-content {
+  overflow-y: auto;
+  max-height: 100dvh;
+  scrollbar-width: none;
+}
+#results .overlay-content::-webkit-scrollbar { display: none; }
+
 .results-label {
   font-size: 0.8rem;
   font-weight: 600;
@@ -308,14 +317,29 @@ html, body {
   color: var(--text-muted);
 }
 
-/* Name input */
-.name-row {
+/* Rank display */
+.rank-display {
+  font-size: 1rem;
+  font-weight: 700;
+  min-height: 1.4em;
+  letter-spacing: 0.01em;
+}
+
+.rank-display.preview   { color: var(--text-muted); }
+.rank-display.confirmed { color: var(--accent); }
+.rank-display.unranked  { color: var(--text-dim); }
+
+/* Name + save */
+.save-row {
+  display: flex;
+  gap: 0.5rem;
   width: 100%;
-  max-width: 320px;
+  max-width: 340px;
 }
 
 .name-input {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   background: rgba(255, 255, 255, 0.07);
   border: 1.5px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius);
@@ -328,6 +352,34 @@ html, body {
   transition: border-color 0.2s ease, background 0.2s ease;
   outline: none;
   -webkit-appearance: none;
+}
+
+.btn-save {
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0 1.1rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-save:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.btn-save:disabled {
+  color: var(--success);
+  border-color: var(--success);
+  cursor: default;
+  opacity: 0.85;
 }
 
 .name-input::placeholder {
@@ -355,49 +407,74 @@ html, body {
   transform: translateY(0);
 }
 
-/* History */
-.history-section {
+/* Leaderboard */
+.leaderboard {
   width: 100%;
   max-width: 360px;
 }
 
-.history-section h3 {
-  font-size: 0.75rem;
+.lb-header {
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-dim);
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
 }
 
-.history-row {
+.lb-row {
   display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 0.5rem 1rem;
-  font-size: 0.82rem;
-  padding: 0.45rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  grid-template-columns: 2.5rem 1fr auto;
+  align-items: center;
+  gap: 0 0.5rem;
+  padding: 0.42rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.84rem;
   color: var(--text-muted);
 }
 
-.history-row:last-child {
-  border-bottom: none;
+.lb-row.lb-you {
+  background: rgba(76, 201, 240, 0.1);
+  color: var(--text);
 }
 
-.history-row .h-name {
+.lb-rank {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-dim);
+}
+
+.lb-row.lb-you .lb-rank {
+  color: var(--accent);
+}
+
+.lb-name {
   text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.history-row .h-score {
+.lb-score {
   font-weight: 700;
   color: var(--text);
+  font-variant-numeric: tabular-nums;
 }
 
-.history-row .h-date {
+.lb-sep {
+  text-align: center;
   color: var(--text-dim);
+  font-size: 0.8rem;
+  padding: 0.15rem 0;
+  letter-spacing: 0.1em;
+}
+
+.lb-empty {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 0.5rem 0;
 }
 
 /* ── Responsive tweaks ──────────────────────────────────── */
