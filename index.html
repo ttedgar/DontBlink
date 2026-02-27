@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Test your reaction time. Click when the color changes — but don't blink.">
+  <title>Don't Blink — Reaction Time Game</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Intro Screen -->
+  <div id="intro" class="screen active">
+    <div class="overlay-content">
+      <h1 class="title">Don't<br>Blink</h1>
+      <p class="subtitle">Test your reaction time</p>
+      <p class="instructions">
+        When the color changes —<br>
+        click as fast as you can.<br>
+        <span class="warning-hint">Don't click too early.</span>
+      </p>
+      <button id="startBtn" class="btn btn-primary">Play</button>
+      <div id="bestScoreDisplay" class="best-score"></div>
+    </div>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="game" class="screen">
+    <div id="roundIndicator" class="round-indicator">Round 1 of 5</div>
+    <div id="gameMessage" class="game-message">
+      <span id="messageText">Get ready…</span>
+    </div>
+    <div id="scoreDots" class="score-dots"></div>
+  </div>
+
+  <!-- Results Screen -->
+  <div id="results" class="screen">
+    <div class="overlay-content">
+      <p class="results-label">Your average</p>
+      <div id="finalScore" class="final-score">—</div>
+      <div id="scoreBreakdown" class="score-breakdown"></div>
+
+      <div class="name-row">
+        <input
+          type="text"
+          id="playerName"
+          class="name-input"
+          placeholder="Enter your name"
+          maxlength="20"
+          autocomplete="off"
+          spellcheck="false"
+        >
+      </div>
+
+      <div class="btn-row">
+        <button id="playAgainBtn" class="btn btn-primary">Play Again</button>
+        <button id="shareBtn" class="btn btn-secondary">Share</button>
+      </div>
+
+      <div id="shareFeedback" class="share-feedback">Copied to clipboard!</div>
+
+      <div id="historySection" class="history-section"></div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
